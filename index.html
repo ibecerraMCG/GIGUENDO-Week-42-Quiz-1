@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 42 Practice Quiz 1</title>
+
+    <style>
+        /* --- CSS Variables & Themes --- */
+        :root {
+            --transition-speed: 0.3s;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Default Feedback Colors (Fallback for custom themes) */
+            --feedback-success-bg: #064e3b;
+            --feedback-success-border: #059669;
+            --feedback-success-text: #a7f3d0;
+            --feedback-error-bg: #7f1d1d;
+            --feedback-error-border: #dc2626;
+            --feedback-error-text: #fecaca;
+        }[data-theme="dark"] {
+            --bg-body: #1e293b; --bg-card: #334155; --bg-header: #0f172a;
+            --text-main: #f1f5f9; --text-muted: #94a3b8; --text-accent: #38bdf8;
+            --border-color: #475569; --highlight-bg: #475569;
+            --button-bg: #38bdf8; --button-text: #0f172a; --button-hover: #0ea5e9;
+        }[data-theme="light"] {
+            --bg-body: #f3f4f6; --bg-card: #ffffff; --bg-header: #ffffff;
+            --text-main: #1f2937; --text-muted: #6b7280; --text-accent: #2563eb;
+            --border-color: #e5e7eb; --highlight-bg: #f3f4f6;
+            --button-bg: #2563eb; --button-text: #ffffff; --button-hover: #1d4ed8;
+            --feedback-success-bg: #ecfdf5; --feedback-success-border: #34d399; --feedback-success-text: #065f46;
+            --feedback-error-bg: #fef2f2; --feedback-error-border: #f87171; --feedback-error-text: #991b1b;
+        }[data-theme="midnight"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #e0e0e0; --text-muted: #888888; --text-accent: #90caf9;
+            --border-color: #333333; --highlight-bg: #1a1a1a;
+            --button-bg: #90caf9; --button-text: #000000; --button-hover: #42a5f5;
+            --feedback-success-bg: #051b11; --feedback-success-border: #0f5132; --feedback-success-text: #75b798;
+            --feedback-error-bg: #2c0b0e; --feedback-error-border: #842029; --feedback-error-text: #ea868f;
+        }[data-theme="legacy-dark"] {
+            --bg-body: #2d343e; --bg-card: #3c424f; --bg-header: #3c424f;
+            --text-main: #e8e6e3; --text-muted: #b0c4de; --text-accent: #8ab4f8;
+            --border-color: #555; --highlight-bg: #454c5a;
+            --button-bg: #8ab4f8; --button-text: #202124; --button-hover: #a3c5f9;
+            --feedback-success-bg: #344e41; --feedback-success-border: #52b788; --feedback-success-text: #c7f9cc;
+            --feedback-error-bg: #5e2129; --feedback-error-border: #a4133c; --feedback-error-text: #f8d7da;
+        }[data-theme="sepia"] {
+            --bg-body: #f4ecd8; --bg-card: #fdf6e3; --bg-header: #e4d5b7;
+            --text-main: #433422; --text-muted: #7c6f5a; --text-accent: #a05a2c;
+            --border-color: #d3c4a5; --highlight-bg: #ebe1c9;
+            --button-bg: #a05a2c; --button-text: #fdf6e3; --button-hover: #864822;
+            --feedback-success-bg: #e6f4ea; --feedback-success-border: #8ab893; --feedback-success-text: #2e4c35;
+            --feedback-error-bg: #f9e3e3; --feedback-error-border: #d48f8f; --feedback-error-text: #5c2b2b;
+        }[data-theme="contrast"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #ffffff; --text-muted: #dddddd; --text-accent: #ffff00;
+            --border-color: #ffffff; --highlight-bg: #333333;
+            --button-bg: #ffff00; --button-text: #000000; --button-hover: #e6e600;
+            --feedback-success-bg: #000000; --feedback-success-border: #00ff00; --feedback-success-text: #00ff00;
+            --feedback-error-bg: #000000; --feedback-error-border: #ff0000; --feedback-error-text: #ff0000;
+        }
+
+        /* --- Global Reset & Layout --- */
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            margin: 0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            line-height: 1.6;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header.unpinned { position: relative; box-shadow: none; }
+
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; flex-wrap: wrap; gap: 15px;
+        }
+
+        header h1 { font-size: 1.5rem; margin: 0; color: var(--text-accent); font-weight: 700; }
+
+        .controls-wrapper { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+        /* --- Custom Theme Builder --- */
+        .custom-builder {
+            display: none; flex-wrap: wrap; gap: 15px;
+            background-color: var(--bg-card); padding: 10px 15px;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            margin-top: 5px; font-size: 0.85rem; animation: fadeIn 0.3s;
+            width: 100%; justify-content: flex-end;
+        }
+        .custom-builder.active { display: flex; }
+        .color-picker-group { display: flex; align-items: center; gap: 8px; }
+        .color-picker-group input[type="color"] {
+            border: none; width: 25px; height: 25px; border-radius: 4px;
+            cursor: pointer; padding: 0; background: none;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Controls --- */
+        .header-btn {
+            background-color: var(--highlight-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-btn:hover {
+            border-color: var(--text-accent);
+            color: var(--text-accent);
+        }
+
+        .pin-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-main);
+            cursor: pointer; padding: 0 10px; border-radius: 6px; font-size: 1rem;
+            transition: background-color 0.2s; height: 34px; display: flex;
+            align-items: center; justify-content: center;
+        }
+        .pin-btn:hover { background-color: var(--highlight-bg); }
+        .pin-btn.pin-active { background-color: rgba(0, 0, 0, 0.1); }
+
+        select#theme-select {
+            padding: 0 12px; border-radius: 6px; border: 1px solid var(--border-color);
+            background-color: var(--bg-card); color: var(--text-main);
+            cursor: pointer; font-family: inherit; height: 34px;
+        }
+
+        /* --- Section Navigation --- */
+        .section-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+        .section-nav button {
+            background-color: var(--highlight-bg); color: var(--text-main);
+            border: 1px solid var(--border-color); padding: 6px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .section-nav button:hover { border-color: var(--text-accent); color: var(--text-accent); }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1rem 4rem 1rem;
+        }
+
+        .section-header {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--text-accent);
+            color: var(--text-accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            scroll-margin-top: 150px; /* Offset for sticky header */
+        }
+
+        /* --- Question Card --- */
+        .question-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .lo-box {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid var(--text-accent);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+            display: none; /* Hidden by default */
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Options --- */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: var(--highlight-bg);
+            border-color: var(--text-muted);
+        }
+
+        .option-label input {
+            margin-top: 0.3rem;
+            margin-right: 1rem;
+            accent-color: var(--text-accent);
+            transform: scale(1.2);
+        }
+
+        /* --- Buttons --- */
+        .btn-check {
+            margin-top: 1.5rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-check:hover {
+            opacity: 0.9;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-link:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Feedback Area --- */
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            border: 1px solid transparent;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-success-bg);
+            border-color: var(--feedback-success-border);
+            color: var(--feedback-success-text);
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-error-bg);
+            border-color: var(--feedback-error-border);
+            color: var(--feedback-error-text);
+        }
+
+        .feedback-header {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .rationale {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .source {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+            border-top: 1px dashed currentColor;
+            padding-top: 0.5rem;
+        }
+
+        /* --- Mobile Tweaks --- */
+        @media (max-width: 768px) {
+            .header-top { flex-direction: column; align-items: flex-start; }
+            .controls-wrapper { width: 100%; justify-content: flex-start; }
+            .section-nav { justify-content: flex-start; }
+            .custom-builder { justify-content: flex-start; }
+            header h1 { font-size: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="header-top">
+            <h1>Week 42 Practice Quiz 1</h1>
+            <div class="controls-wrapper">
+                
+                <!-- Reveal LOs Button -->
+                <button id="reveal-all-btn" class="header-btn" onclick="toggleAllLOs()">Show Learning Objectives</button>
+                
+                <!-- Pin Button -->
+                <button class="pin-btn pin-active" id="pin-btn" onclick="toggleHeader()" title="Pin/Unpin Header">📌</button>
+                
+                <!-- Theme Selector -->
+                <div class="theme-control">
+                    <select id="theme-select" onchange="changeTheme(this.value)">
+                        <option value="dark">Modern Dark</option>
+                        <option value="midnight">Midnight</option>
+                        <option value="light">Modern Light</option>
+                        <option value="legacy-dark">Legacy Dark</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="contrast">High Contrast</option>
+                        <option value="custom">⚙️ Custom...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Custom Theme Color Pickers -->
+            <div class="custom-builder" id="custom-builder">
+                <div class="color-picker-group">
+                    <label>Background:</label>
+                    <input type="color" id="color-bg" value="#1a1a2e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Cards:</label>
+                    <input type="color" id="color-card" value="#16213e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Text:</label>
+                    <input type="color" id="color-text" value="#e94560" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Accent:</label>
+                    <input type="color" id="color-accent" value="#0f3460" oninput="updateCustomTheme()">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dynamic Navigation Bar -->
+        <div class="section-nav" id="section-nav"></div>
+    </header>
+
+    <div class="container">
+        <div id="quiz-root">
+            <!-- Content injected via JS -->
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+        const quizData =[
+            // --- Section 1: Perineum ---
+            {
+                section: "Perineum",
+                fullLO: "LO1: Describe the perineum, its boundaries, divisions (anal and urogenital triangles), and neurovasculature supply. Discuss the perineal body and its clinical significance.",
+                question: "A 45-year-old male is undergoing complex pelvic surgery. The surgeon identifies the shallow, diamond-shaped compartment inferior to the pelvic floor muscles. When determining the anatomical borders of this region, which of the following bony structures forms the posterior tip of the pelvic outlet?",
+                options: {
+                    A: "Ischial spine",
+                    B: "Ischial tuberosity",
+                    C: "Pubic symphysis",
+                    D: "Sacral promontory",
+                    E: "Coccyx"
+                },
+                correctAnswer: "E",
+                rationale: "The anatomical borders of the perineum are defined by the bony margins of the pelvic outlet. The pubic symphysis forms the anterior tip, the ischial tuberosities form the lateral points, and the coccyx forms the posterior tip.",
+                source: "Perineum PDF, page 49: 'Anatomical borders: bony margins of the pelvic outlet (pubic symphysis, ischiopubic rami, ischial tuberosities, sacrotuberous ligament, & coccyx)'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO1: Describe the perineum, its boundaries, divisions (anal and urogenital triangles), and neurovasculature supply. Discuss the perineal body and its clinical significance.",
+                question: "A radiologist evaluating an MRI of the male pelvis draws an imaginary transverse line connecting the two ischial tuberosities. According to anatomical definitions, this specific line effectively separates the anterior urogenital triangle from which of the following posterior structures?",
+                options: {
+                    A: "Anal triangle",
+                    B: "Deep perineal pouch",
+                    C: "Pelvic diaphragm",
+                    D: "Rectovesical pouch",
+                    E: "Superficial perineal pouch"
+                },
+                correctAnswer: "A",
+                rationale: "The perineum is subdivided into two triangles based on a transverse line drawn between the ischial tuberosities: the Urogenital (UG) Triangle anteriorly, and the Anal Triangle posteriorly.",
+                source: "Perineum PDF, page 49: 'Subdivided into 2 Triangles: (based on transverse line between the ischial tuberosities)... 1. Urogenital (UG) Triangle (anterior triangle)... 2. Anal Triangle (posterior triangle)'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO1: Describe the perineum, its boundaries, divisions (anal and urogenital triangles), and neurovasculature supply. Discuss the perineal body and its clinical significance.",
+                question: "A 28-year-old woman undergoes a difficult vaginal delivery. She suffers a severe perineal tear involving the central musculofibrous mass midway between her ischial tuberosities. Because this specific structure acts as the final passive support linking muscles that extend across the pelvic outlet, its disruption places her at highest risk for which of the following long-term complications?",
+                options: {
+                    A: "Ischioanal abscess",
+                    B: "Prolapse of pelvic viscera",
+                    C: "Pudendal nerve entrapment",
+                    D: "Rupture of the spongy urethra",
+                    E: "Urethral extravasation"
+                },
+                correctAnswer: "B",
+                rationale: "The perineal body is the central musculofibrous convergence point of several perineal muscles. It is the final passive support of the pelvic viscera. If its attachments are stretched or torn during childbirth, loss of support for the pelvic floor can lead to prolapse of the pelvic viscera (vagina, uterus, and bladder).",
+                source: "Perineum PDF, page 49: 'The perineal membrane & perineal body are important clinically in the female because they are the final passive support of the pelvic viscera... The attachment points of perineal muscles can be stretched or torn during childbirth, thereby losing support of the pelvic floor. This can lead to prolapse of pelvic viscera.'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO2: Identify and describe the boundaries and contents of the anal triangle and ischioanal fossa. Describe the spread of infection associated with ischioanal abscesses.",
+                question: "A 35-year-old man presents with severe, throbbing pain and palpable fullness between his anus and right ischial tuberosity. The physician diagnoses an abscess within the ischioanal fossa. Under normal physiological conditions, which of the following tissues primarily occupies this large wedge-shaped space to support the anal canal and allow for its expansion during defecation?",
+                options: {
+                    A: "Corpora cavernosa",
+                    B: "Deep transverse perineal muscle",
+                    C: "Fat and loose connective tissue",
+                    D: "Greater vestibular glands",
+                    E: "Smooth muscle"
+                },
+                correctAnswer: "C",
+                rationale: "The ischioanal fossae are large spaces on either side of the anal canal. They are filled with ischioanal fat and loose connective tissue, which physically support the anal canal while remaining compressible enough to allow its expansion during defecation.",
+                source: "Perineum PDF, page 50: 'Ischioanal Fossae... Occupied by ischioanal fat & loose connective tissue, which support the anal canal and allow for its expansion during defecation'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO2: Identify and describe the boundaries and contents of the anal triangle and ischioanal fossa. Describe the spread of infection associated with ischioanal abscesses.",
+                question: "A 40-year-old man with Crohn's disease develops a right-sided ischioanal abscess. Two days later, he experiences worsening pain as the infection spreads to the contralateral (left) ischioanal fossa, forming a classic \"horseshoe-shaped\" abscess. The purulent material most likely crossed the midline via which of the following anatomical pathways?",
+                options: {
+                    A: "Deep postanal space",
+                    B: "Pudendal canal",
+                    C: "Superficial perineal pouch",
+                    D: "Urogenital hiatus",
+                    E: "Vesicouterine pouch"
+                },
+                correctAnswer: "A",
+                rationale: "The left and right ischioanal fossae communicate with each other posteriorly. An abscess in one fossa can spread to the other side through the deep postanal space (which passes under the anococcygeal ligament), creating a horseshoe-shaped abscess.",
+                source: "Perineum PDF, page 50: 'The fossae are connected on both sides via the deep postanal space... Posteriorly through the deep postanal space, an abscess in one fossa may spread to the other side forming a semicircular “horseshoe-shaped” abscess around the posterior aspect of the anal canal.'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO3: Identify and describe the boundaries and contents of the urogenital triangle, associated fasciae, and superficial and deep perineal pouches. Discuss the role fascia plays in the clinical presentation that follows a ruptured urethra.",
+                question: "A 25-year-old man presents to the emergency department after a straddle injury on a bicycle. He has blood at the urethral meatus and a markedly swollen scrotum. A rupture of the spongy urethra is suspected. In which of the following specific anatomical compartments has the extravasated urine and blood initially collected?",
+                options: {
+                    A: "Deep perineal pouch",
+                    B: "Ischioanal fossa",
+                    C: "Pelvic cavity",
+                    D: "Rectovesical pouch",
+                    E: "Superficial perineal pouch"
+                },
+                correctAnswer: "E",
+                rationale: "The male spongy urethra is located within the superficial perineal pouch. When it is ruptured (often due to a straddle injury), blood and urine accumulate directly into the superficial perineal pouch, expanding into the scrotum.",
+                source: "Perineum PDF, page 58: 'When the male spongy urethra is ruptured possibly due to a straddle injury... there is accumulation of blood &/or urine into the superficial perineal pouch.'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO3: Identify and describe the boundaries and contents of the urogenital triangle, associated fasciae, and superficial and deep perineal pouches. Discuss the role fascia plays in the clinical presentation that follows a ruptured urethra.",
+                question: "A 40-year-old man undergoes a surgical procedure to drain a severe infection in his superficial perineal pouch. During the procedure, the surgeon identifies the superficial membranous fascia (Colles' fascia). If the infection were to spread anteriorly from the perineum into the scrotum, it would track along the continuation of this fascial layer. In the scrotum, this layer is anatomically continuous with which of the following?",
+                options: {
+                    A: "Buck's fascia",
+                    B: "Camper's fascia",
+                    C: "Dartos fascia",
+                    D: "Fascia lata",
+                    E: "Tunica albuginea"
+                },
+                correctAnswer: "C",
+                rationale: "The deep membranous layer of the superficial perineal fascia (Colles' fascia) is continuous anteriorly with the smooth Dartos fascia of the penis and scrotum in males.",
+                source: "Perineum PDF, page 52: 'Deep membranous layer (colle’s fascia)... In males: continuous anteriorly with the Dartos fascia of the penis & scrotum'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO3: Identify and describe the boundaries and contents of the urogenital triangle, associated fasciae, and superficial and deep perineal pouches. Discuss the role fascia plays in the clinical presentation that follows a ruptured urethra.",
+                question: "Following a rupture of the spongy urethra, extravasated urine and blood fill the superficial perineal pouch and begin to track upward onto the anterior abdominal wall. Which of the following fascial layers restricts this fluid and prevents it from extending laterally into the patient's thighs?",
+                options: {
+                    A: "Camper's fascia",
+                    B: "Fascia lata",
+                    C: "Perineal membrane",
+                    D: "Tunica albuginea",
+                    E: "Transversalis fascia"
+                },
+                correctAnswer: "B",
+                rationale: "The boundaries of fluid extravasation are determined by fascial attachments. The deep membranous layer (Colles' fascia) of the superficial perineal fascia attaches laterally to the fascia lata of the thigh, strictly preventing fluid in the superficial perineal pouch from spreading into the thighs. Instead, fluid moves upward onto the anterior abdominal wall.",
+                source: "Perineum PDF, pages 52 & 58: 'Deep membranous layer (colle’s fascia)... Attaches laterally to the fascia lata of the thigh... Fluid cannot extend to the thigh or anal triangle, so it moves upward onto the anterior abdominal wall'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO4: Describe the male and female external genitalia, associated fasciae, musculature, erectile bodies, neurovascular supply, lymphatic drainage, and structures found in the superficial and deep perineal pouches.",
+                question: "A 65-year-old woman presents with a firm, painless ulcer on her left labia majora. Biopsy confirms squamous cell carcinoma. To stage the disease, the surgeon must evaluate the primary lymph nodes that drain the skin of this specific region. Which of the following lymph node groups should be biopsied first?",
+                options: {
+                    A: "Deep inguinal lymph nodes",
+                    B: "External iliac lymph nodes",
+                    C: "Internal iliac lymph nodes",
+                    D: "Lateral aortic lymph nodes",
+                    E: "Superficial inguinal lymph nodes"
+                },
+                correctAnswer: "E",
+                rationale: "The lymphatic drainage from the skin of the female perineum, including the labia majora, vaginal orifice, vestibule, and inferior anal canal, flows directly to the superficial inguinal lymph nodes.",
+                source: "Perineum PDF, page 56: 'Superficial inguinal lymph nodes – drainage from skin (labia majora, vaginal orifice, vestibule of the vagina, and anal canal inferior to the pectinate line)'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO4: Describe the male and female external genitalia, associated fasciae, musculature, erectile bodies, neurovascular supply, lymphatic drainage, and structures found in the superficial and deep perineal pouches.",
+                question: "A 30-year-old man undergoes urologic surgery. To complete the procedure, the surgeon must incise the perineal membrane and access the structures located strictly within the deep perineal pouch. Which of the following normal anatomical structures will the surgeon find within this specific compartment?",
+                options: {
+                    A: "Bulbourethral glands",
+                    B: "Corpus cavernosum",
+                    C: "Corpus spongiosum",
+                    D: "Greater vestibular glands",
+                    E: "Ischiocavernosus muscle"
+                },
+                correctAnswer: "A",
+                rationale: "The deep perineal pouch in males contains part of the urethra, the external urethral sphincter, deep transverse perineal muscles, and the bulbourethral glands. (In females, the greater vestibular glands are in the superficial pouch, and the bulbourethral glands in males are in the deep pouch).",
+                source: "Perineum PDF, page 53: 'Deep Perineal Pouch... Contents: ... Males: Bulbourethral glands'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO4: Describe the male and female external genitalia, associated fasciae, musculature, erectile bodies, neurovascular supply, lymphatic drainage, and structures found in the superficial and deep perineal pouches.",
+                question: "A 32-year-old man sustains an injury to his perineum, resulting in damage to the somatic motor nerves supplying the superficial perineal muscles. The patient subsequently exhibits weakness in the paired muscles that tightly cover the crura of the penis to help maintain an erection. Which of the following muscles is primarily affected?",
+                options: {
+                    A: "Bulbospongiosus",
+                    B: "Coccygeus",
+                    C: "Ischiocavernosus",
+                    D: "Puborectalis",
+                    E: "Superficial transverse perineal"
+                },
+                correctAnswer: "C",
+                rationale: "The ischiocavernosus muscles are paired muscles covering the crura of the penis (or clitoris). They function to maintain erection by compressing outflow veins and forcing blood from the root into the body of the penis. (The bulbospongiosus muscles cover the bulb of the penis).",
+                source: "Perineum PDF, page 58: 'Ischiocavernosus muscles – paired muscles covering the crura of the penis... Function: maintain erection of the penis by compressing outflow veins and forcing blood from the root of the penis into the body of the penis'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO5: Discuss the innervation (both somatic and autonomic) of the male and female perineum, particularly with regard to erection and remission of erection.",
+                question: "A 50-year-old woman undergoes resection of a rectal tumor that involves the inferior anal canal, below the pectinate line. Postoperatively, she reports a loss of voluntary control over defecation. The somatic motor nerve damaged during the procedure, which supplies the external anal sphincter, is a direct branch of the pudendal nerve known as the:",
+                options: {
+                    A: "Deep perineal nerve",
+                    B: "Dorsal nerve of the clitoris",
+                    C: "Ilioinguinal nerve",
+                    D: "Inferior rectal nerve",
+                    E: "Superficial perineal nerve"
+                },
+                correctAnswer: "D",
+                rationale: "The inferior rectal nerve (a branch of the pudendal nerve) provides motor innervation to the external anal sphincter (allowing voluntary control) and sensory innervation to the perianal skin and anal canal below the pectinate line.",
+                source: "Perineum PDF, page 51: 'Inferior to the pectinate line: inferior rectal nerves (br. of the pudendal nerve) supply motor innervation to the external anal sphincter (voluntary control)'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO5: Discuss the innervation (both somatic and autonomic) of the male and female perineum, particularly with regard to erection and remission of erection.",
+                question: "A 45-year-old man seeks treatment for erectile dysfunction. He is prescribed a medication that enhances blood flow into the corpora cavernosa. The physiological initiation of an erection—specifically the dilation of the helicine arteries—is driven by postsynaptic parasympathetic nerve fibers originating from which of the following?",
+                options: {
+                    A: "Cavernous nerves",
+                    B: "Deep perineal nerve",
+                    C: "Ilioinguinal nerve",
+                    D: "Inferior rectal nerve",
+                    E: "Posterior scrotal nerve"
+                },
+                correctAnswer: "A",
+                rationale: "The cavernous nerves carry the necessary postsynaptic parasympathetic innervation to the helicine arteries, causing them to dilate and allow blood flow into the erectile tissue, initiating an erection.",
+                source: "Perineum PDF, page 60: 'Cavernous nerves – convey postsynaptic parasympathetic innervation to helicine arteries for erection (presynaptic parasympathetics from pelvic splanchnic nerves (S2-S4))'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO5: Discuss the innervation (both somatic and autonomic) of the male and female perineum, particularly with regard to erection and remission of erection.",
+                question: "Following normal sexual intercourse and ejaculation, a healthy 28-year-old man experiences remission (detumescence) of his erection. This process of returning the penis to a flaccid state is primarily mediated by which of the following neural mechanisms?",
+                options: {
+                    A: "Parasympathetic stimulation of the cavernous nerves",
+                    B: "Parasympathetic stimulation of the deep dorsal vein",
+                    C: "Somatic motor stimulation of the bulbospongiosus muscle",
+                    D: "Sympathetic stimulation causing constriction of helicine arteries",
+                    E: "Sympathetic stimulation causing dilation of the deep dorsal vein"
+                },
+                correctAnswer: "D",
+                rationale: "Remission of an erection is driven by sympathetic stimulation (from IML L1-L2). This causes constriction of the helicine arteries, reducing blood inflow, while the ischiocavernosus and bulbospongiosus muscles relax to allow blood to exit the erectile tissue.",
+                source: "Perineum PDF, slide 44: 'Remission • Sympathetic stimulation (IML L1-L2) • Constriction of helicine arteries'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO6: Discuss the clinical anatomy related to clinical conditions and procedures including:, urethral catheterization & malformations, urethral perforation or rupture & urinary extravasation, circumcision, episiotomies, and pudendal nerve block.",
+                question: "A 26-year-old woman is in the second stage of labor and requires a pudendal nerve block to relieve severe perineal pain. The obstetrician places a finger inside the vaginal wall to palpate a specific bony landmark and properly direct the anesthetic needle toward the pudendal nerve. Which of the following structures serves as this critical anatomical guide?",
+                options: {
+                    A: "Coccyx",
+                    B: "Ischial spine",
+                    C: "Ischial tuberosity",
+                    D: "Pubic symphysis",
+                    E: "Sacral promontory"
+                },
+                correctAnswer: "B",
+                rationale: "A pudendal nerve block is administered where the pudendal nerve crosses the sacrospinous ligament or in the pudendal canal. The crucial bony landmark used to locate this injection site transvaginally is the ischial spine.",
+                source: "Perineum PDF, page 56: 'The needle can be inserted through the overlying skin or through the vaginal wall, upon palpating the tip of the ischial spine (an important landmark).'"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO6: Discuss the clinical anatomy related to clinical conditions and procedures including:, urethral catheterization & malformations, urethral perforation or rupture & urinary extravasation, circumcision, episiotomies, and pudendal nerve block.",
+                question: "An obstetrician performs a median episiotomy on a patient during childbirth to prevent excessive, uncontrolled perineal tearing. However, the incision unfortunately extends further posteriorly than intended. Which of the following anatomical structures is at greatest risk of severe damage during this specific complication of a median episiotomy?",
+                options: {
+                    A: "Bulbospongiosus muscle",
+                    B: "External anal sphincter",
+                    C: "Ischiocavernosus muscle",
+                    D: "Perineal membrane",
+                    E: "Superficial transverse perineal muscle"
+                },
+                correctAnswer: "B",
+                rationale: "A median episiotomy cuts centrally through the perineal body. If tearing continues past the incision, it is directed straight toward the anus, putting the external anal sphincter and anal canal at high risk for severe laceration, which can cause long-term incontinence. (Mediolateral episiotomies direct tearing away from the anus).",
+                source: "Perineum PDF, page 50: 'During a median episiotomy... when tearing does happen, it is directed toward the anus. It is associated with an increased incidence of severe lacerations, long-term incontinence, pelvic prolapse, & anovaginal fistulae.' AND 'If tearing occurs will be directed to the external anal sphincter and anus = perineum weakness' (Slide 17)"
+            },
+            {
+                section: "Perineum",
+                fullLO: "LO6: Discuss the clinical anatomy related to clinical conditions and procedures including:, urethral catheterization & malformations, urethral perforation or rupture & urinary extravasation, circumcision, episiotomies, and pudendal nerve block.",
+                question: "A medical student is learning how to properly insert a Foley catheter into a male patient. The attending physician cautions the student to carefully negotiate the natural curves of the urethra. Which of the following specific segments of the urethra is most vulnerable to rupture during catheterization due to its thin walls, sharp angle, and lack of surrounding erectile tissue?",
+                options: {
+                    A: "Membranous (intermediate) urethra",
+                    B: "Preprostatic urethra",
+                    C: "Prostatic urethra",
+                    D: "Spongy (penile) urethra within the glans",
+                    E: "Ureteric orifice"
+                },
+                correctAnswer: "A",
+                rationale: "While the spongy urethra is well covered by erectile tissue, a short segment of the membranous (intermediate) urethra is unprotected. Its thin walls and sharp angle make it uniquely vulnerable to being ruptured if a catheter is not carefully negotiated.",
+                source: "Perineum PDF, page 58: 'When inserting catheters, the curves of the male urethra must be considered... a short segment of the membranous urethra is unprotected. Due to its thin walls & its angle, this portion of the urethra must carefully be negotiated to avoid rupturing it when inserting a catheter.'"
+            },
+
+            // --- Section 2: Tumors of the Kidney ---
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO1: Compare and contrast the common renal tumors, both benign and malignant.",
+                question: "A 32-year-old woman with a known history of tuberous sclerosis syndrome presents with right-sided flank pain. Imaging reveals a 4-cm solid benign renal mass. A biopsy demonstrates a disordered mixture of thick-walled blood vessels, smooth muscle bundles, and mature adipose tissue. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Angiomyolipoma",
+                    B: "Clear cell renal cell carcinoma",
+                    C: "Oncocytoma",
+                    D: "Papillary adenoma",
+                    E: "Wilms tumor"
+                },
+                correctAnswer: "A",
+                rationale: "Angiomyolipoma is a benign mesenchymal tumor composed of abnormal thick-walled vessels, smooth muscle cells, and adipose tissue. It is highly associated with Tuberous sclerosis (present in 25-50% of patients).",
+                source: "Tumors of the Kidney PDF, slide 10: 'Angiomyolipoma • Benign mesenchymal tumor composed of: Abnormal thick walled vessels, Smooth muscle cells, Adipose tissue • Present in 25-50% of patients with Tuberous sclerosis'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO1: Compare and contrast the common renal tumors, both benign and malignant.",
+                question: "A 65-year-old obese man with a 40-pack-year smoking history presents with painless hematuria. Imaging reveals a unilateral 6-cm mass at the upper pole of the right kidney. A radical nephrectomy is performed. Gross examination of the surgical specimen reveals a spherical, distinctly golden-yellow, cystic mass arising in the cortex. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Angiomyolipoma",
+                    B: "Chromophobe renal cell carcinoma",
+                    C: "Clear cell renal cell carcinoma",
+                    D: "Papillary adenoma",
+                    E: "Papillary renal cell carcinoma"
+                },
+                correctAnswer: "C",
+                rationale: "Clear cell RCC is the most common primary malignant renal neoplasm. It classically arises in the cortex and appears golden-yellow grossly due to its high lipid content. Risk factors include obesity and smoking.",
+                source: "Tumors of the Kidney PDF, slides 19-21: 'Clear cell renal cell carcinoma (Clear cell RCC)... Most common type... Spherical, 3-15cm, arises in the cortex, yellow, cystic' AND 'Golden yellow because of high lipid content in cells'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO1: Compare and contrast the common renal tumors, both benign and malignant.",
+                question: "During a routine autopsy of an 80-year-old man, a pathologist incidentally discovers a 1.0-cm unencapsulated tumor in the renal cortex. Microscopic examination reveals a papillary architecture. Based on the widely accepted size criteria for differentiating benign from malignant papillary renal lesions, what is the most appropriate classification for this tumor?",
+                options: {
+                    A: "Angiomyolipoma",
+                    B: "Chromophobe RCC",
+                    C: "Oncocytoma",
+                    D: "Papillary adenoma",
+                    E: "Papillary renal cell carcinoma"
+                },
+                correctAnswer: "D",
+                rationale: "Papillary adenomas are histologically identical to papillary renal cell carcinomas but are, by definition, less than 1.5 cm in size. Tumors larger than 1.5 cm are classified as papillary RCC.",
+                source: "Tumors of the Kidney PDF, slide 12: 'PAPILLARY ADENOMA... Unencapsulated tumors with papillary or tubular architecture... Size criteria: Less than 1.5cm... Histologically identical to papillary RCC but are < 1.5 cm in size'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO2: Compare and contrast the derivation of each tumor.",
+                question: "A 3-year-old boy is brought to the pediatrician after his parents noticed a firm, palpable mass in his abdomen. A biopsy of the mass leads to a diagnosis of Wilms tumor (Nephroblastoma). The neoplastic cells comprising this specific pediatric tumor are embryologically derived from which of the following precursors?",
+                options: {
+                    A: "Intercalated cells of the collecting duct",
+                    B: "Nephrogenic rests",
+                    C: "Perivascular epithelioid cells",
+                    D: "Proximal tubular epithelial cells",
+                    E: "Urothelium of the renal pelvis"
+                },
+                correctAnswer: "B",
+                rationale: "Wilms tumor (Nephroblastoma) is the most common malignant renal neoplasm in children. It is uniquely derived from nephrogenic rests, which are persistent embryonal renal tissues capable of developing into the tumor.",
+                source: "Tumors of the Kidney PDF, slides 55 & 56: 'Wilms tumor (Nephroblastoma) Derived from nephrogenic rests... NEPHROGENIC REST is: Persistent embryonal renal tissue capable of developing into Wilms tumor'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO2: Compare and contrast the derivation of each tumor.",
+                question: "A 55-year-old woman undergoes a partial nephrectomy for a well-circumscribed, solitary, tan-brown renal mass. Histological examination reveals large cells with pale eosinophilic cytoplasm, well-defined cell borders, and distinct perinuclear halos. The pathologist diagnoses a chromophobe renal cell carcinoma. The neoplastic cells in this tumor are derived from which of the following normal cellular counterparts?",
+                options: {
+                    A: "Endothelial cells of the vasa recta",
+                    B: "Intercalated cells of the collecting duct",
+                    C: "Nephrogenic rests",
+                    D: "Perivascular epithelioid cells",
+                    E: "Proximal convoluted tubule cells"
+                },
+                correctAnswer: "B",
+                rationale: "Chromophobe renal cell carcinoma is a distinct subtype of RCC that is derived from the intercalated cells of the collecting duct. (Note: Oncocytomas are also benign tumors derived from these same cells).",
+                source: "Tumors of the Kidney PDF, slide 40: 'Chromophobe renal cell carcinoma (Chromophobe RCC) Derived from intercalated cells of collecting duct'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO2: Compare and contrast the derivation of each tumor.",
+                question: "A 55-year-old man undergoes a radical nephrectomy for a large, golden-yellow renal mass. Histological analysis confirms a clear cell renal cell carcinoma (RCC). When tracing the cellular origin of this specific malignancy, the neoplastic cells are determined to be embryologically derived from which of the following normal renal structures?",
+                options: {
+                    A: "Endothelial cells",
+                    B: "Intercalated cells of the collecting duct",
+                    C: "Nephrogenic rests",
+                    D: "Perivascular epithelioid cells",
+                    E: "Renal tubules"
+                },
+                correctAnswer: "E",
+                rationale: "Clear cell renal cell carcinoma, which accounts for 65% of all renal cell cancers, is derived from the renal tubules. (Chromophobe RCC and Oncocytomas are derived from intercalated cells of the collecting duct).",
+                source: "Tumors of the Kidney PDF, slide 19: 'Clear cell renal cell carcinoma (Clear cell RCC)... Derived from renal tubules'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO3: Describe the chromosomal abnormalities, where applicable.",
+                question: "A 40-year-old man with a family history of retinal hemangioblastomas and cerebellar tumors is found to have bilateral renal masses. A biopsy confirms clear cell renal cell carcinoma. Which of the following chromosomal abnormalities is most fundamentally associated with the pathogenesis of this patient's familial renal disease?",
+                options: {
+                    A: "Deletions on chromosome 3p",
+                    B: "Loss of function mutations in TSC1 (9q34)",
+                    C: "Mutations in the WT1 gene (11p13)",
+                    D: "Translocation involving Xp11",
+                    E: "Trisomy of chromosomes 7, 17, and 20"
+                },
+                correctAnswer: "A",
+                rationale: "Both sporadic and familial Clear Cell RCC are heavily associated with deletions of chromosome 3p (specifically 3p14 to 3p26), which is the locus for the Von-Hippel Lindau (VHL) tumor suppressor gene.",
+                source: "Tumors of the Kidney PDF, slide 26: 'Clear Cell RCC... Associated with deletions of chromosome 3p14 to 3p26 – Chromosome 3p is where the Von-Hippel Lindau (VHL) gene is located'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO3: Describe the chromosomal abnormalities, where applicable.",
+                question: "A 60-year-old man undergoes a nephrectomy for a 4-cm, unilateral renal tumor. Histopathology reveals a diagnosis of sporadic papillary renal cell carcinoma. Cytogenetic analysis of the tumor cells from this patient is most likely to reveal which of the following classic chromosomal profiles?",
+                options: {
+                    A: "Deletion of chromosome 3p",
+                    B: "Homozygous loss of the VHL gene",
+                    C: "Loss of chromosomes 1 and Y",
+                    D: "Mutation in the SMARCB-1 gene",
+                    E: "Trisomy of chromosomes 7, 17, 20 and loss of Y"
+                },
+                correctAnswer: "E",
+                rationale: "Sporadic Papillary RCC is genetically distinct from Clear Cell RCC. It classically demonstrates trisomy of chromosomes 7, 17, and 20, as well as the loss of the Y chromosome in males.",
+                source: "Tumors of the Kidney PDF, slide 36: 'Papillary RCC • Sporadic form... Genetically distinct from clear cell RCC • Trisomy of chromosomes 7, 17, 20 • Loss of Y chromosome'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO3: Describe the chromosomal abnormalities, where applicable.",
+                question: "A 45-year-old woman is diagnosed with a well-circumscribed, pale-brown renal tumor. Cytogenetic evaluation of the resected tissue reveals a striking loss of multiple whole chromosomes, specifically chromosomes 1, 2, 6, and 10. Based on this characteristic genetic profile, what is the most likely diagnosis?",
+                options: {
+                    A: "Angiomyolipoma",
+                    B: "Chromophobe RCC",
+                    C: "Clear cell RCC",
+                    D: "Papillary RCC",
+                    E: "Wilms tumor"
+                },
+                correctAnswer: "B",
+                rationale: "Chromophobe RCC is associated with multiple chromosomal losses, characteristically including chromosomes 1, 2, 6, and 10. (It can also be familial, associated with Birt-Hogg-Dube syndrome on chromosome 17).",
+                source: "Tumors of the Kidney PDF, slide 47: 'Chromophobe RCC... Loss of chromosomes: Chromosome -1, -2, -6, -10'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO4: Recognize their microscopic appearance.",
+                question: "A 65-year-old man undergoes excision of a 4-cm solid renal mass that grossly exhibits a \"mahogany brown\" color and a characteristic central stellate scar. Light microscopy shows sheets of monotonous cells with brightly eosinophilic, granular cytoplasm. Electron microscopy demonstrates that the cytoplasm of these cells is completely packed with which of the following organelles?",
+                options: {
+                    A: "Golgi apparatus",
+                    B: "Lysosomes",
+                    C: "Mitochondria",
+                    D: "Rough endoplasmic reticulum",
+                    E: "Smooth endoplasmic reticulum"
+                },
+                correctAnswer: "C",
+                rationale: "The tumor described is an Oncocytoma. Its gross \"mahogany brown\" appearance and the brightly eosinophilic (pink) staining of its cells on H&E are due to the cytoplasm being completely filled with abundant mitochondria.",
+                source: "Tumors of the Kidney PDF, slides 14-16: 'Oncocytoma... Characteristic “central stellate scar”... “Mahogany brown” color on gross examination... Sheets of brightly eosinophilic monotonous cells... Cytoplasm filled with mitochondria causes the cells to appear bright pink'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO4: Recognize their microscopic appearance.",
+                question: "A 3-year-old girl is evaluated for an asymptomatic abdominal mass. Following surgical resection, the pathologist examines the tissue and renders a diagnosis of Wilms tumor. Which of the following best describes the classic triphasic microscopic appearance of this specific neoplasm?",
+                options: {
+                    A: "Clear cells with distinct membranes and delicate vascular networks",
+                    B: "Large cells with prominent cell walls resembling plant tissue",
+                    C: "Papillae lined by cuboidal cells with foamy macrophages in the cores",
+                    D: "Primitive small round blue cells, tubules, and spindle cells",
+                    E: "Sheets of brightly eosinophilic cells with abundant mitochondria"
+                },
+                correctAnswer: "D",
+                rationale: "Wilms tumor (Nephroblastoma) classically exhibits a triphasic microscopic appearance comprised of blastemal components (primitive small round blue cells), epithelial components (tubules), and stromal components (spindle cells).",
+                source: "Tumors of the Kidney PDF, slide 58: 'Wilms Tumor [Image caption:] Primitive small round blue cells, tubules and spindle cells'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO4: Recognize their microscopic appearance.",
+                question: "A pathologist is examining a slide from a 50-year-old patient's solitary renal tumor. She observes large cells with prominent, thick cell walls that closely resemble plant structures (\"vegetable cells\"). Additionally, there are distinct clear spaces around the nuclei (perinuclear halos). Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Chromophobe RCC",
+                    B: "Clear cell RCC",
+                    C: "Oncocytoma",
+                    D: "SMARCB-1 deficient RCC",
+                    E: "Xp11 translocation RCC"
+                },
+                correctAnswer: "A",
+                rationale: "The hallmark microscopic appearance of Chromophobe RCC features large cells with thick, well-defined cell walls giving them the appearance of \"vegetable cells\", along with perinuclear halos caused by a concentration of vesicles around the nucleus.",
+                source: "Tumors of the Kidney PDF, slides 44 & 45: 'Chromophobe Renal Cell Carcinoma... Tumor cells have well defined cell walls and resemble vegetable cell walls... \"vegetable cells\"' AND 'Concentration of vesicles around the nucleus leads to halo'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO5: Recognize their behavior and prognosis.",
+                question: "A 70-year-old woman is diagnosed with clear cell renal cell carcinoma. Following a radical nephrectomy, pathological staging (pTNM) is performed to ascertain her prognosis. The pathologist notes that the tumor has breached Gerota's fascia and directly invades the ipsilateral adrenal gland. Based on this specific growth pattern, which of the following represents the most accurate prognostic assessment for this patient?",
+                options: {
+                    A: "The prognosis is excellent because the tumor has not reached the renal vein.",
+                    B: "The prognosis is highly favorable as long as the primary tumor size is less than 7 cm.",
+                    C: "The patient has a worse prognosis due to pT4 stage disease.",
+                    D: "The prognosis is determined solely by the Fuhrman nuclear grade, regardless of invasion.",
+                    E: "The tumor is functionally benign because it respects the boundaries of the abdominal cavity."
+                },
+                correctAnswer: "C",
+                rationale: "The stage of the tumor is the most important determinant of prognosis in Clear Cell RCC. A tumor that extends beyond Gerota's fascia or directly invades the adrenal gland is classified as stage pT4, which carries a distinctly worse prognosis.",
+                source: "Tumors of the Kidney PDF, slides 30 & 54: 'Prognosis of Clear Cell RCC... Stage of the tumor • Most important determinant of prognosis • Stage 4 (which is advanced and has spread outside kidney) tumors do worse' AND 'Pathologic Staging... pT4: Tumor beyond Gerota’s fascia or into adrenal gland (DOES WORSE)'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO5: Recognize their behavior and prognosis.",
+                question: "A 22-year-old man of Mediterranean descent with a known history of sickle cell trait presents with severe flank pain, weight loss, and hemoptysis. Imaging reveals a large primary renal mass with widespread metastatic disease. A biopsy confirms a pleomorphic, high-grade neoplasm characterized by abundant neutrophils. Which of the following best describes the typical clinical behavior and prognosis of this specific tumor?",
+                options: {
+                    A: "It exhibits indolent behavior and is easily cured by simple surgical resection.",
+                    B: "It frequently undergoes spontaneous regression without pharmacological intervention.",
+                    C: "It is an extremely rare and aggressive disease with a mean survival of roughly 18 weeks.",
+                    D: "It rarely metastasizes but causes significant local tissue destruction.",
+                    E: "It typically responds dramatically well to conventional chemotherapy, ensuring long-term survival."
+                },
+                correctAnswer: "C",
+                rationale: "The patient has SMARCB-1 deficient Renal Medullary Carcinoma. This is an extremely rare, highly aggressive tumor linked exclusively to sickle cell trait/disease. Patients almost always present with advanced, metastatic disease, and survival is incredibly poor, ranging from 1 day to 68 weeks (mean 18 weeks).",
+                source: "Tumors of the Kidney PDF, slides 49 & 50: 'SMARCB-1 deficient Renal medullary carcinoma... Extremely rare, aggressive... Almost exclusively seen in patients with sickle cell trait or sickle cell disease... Patients present with advanced disease • 95% with metastasis at diagnosis. • Survival – 1 day to 68 weeks (mean: 18 weeks)'"
+            },
+            {
+                section: "Tumors of the Kidney",
+                fullLO: "LO5: Recognize their behavior and prognosis.",
+                question: "A 58-year-old woman is diagnosed with a chromophobe renal cell carcinoma. She is highly anxious about her prognosis and potential for metastatic disease. Compared to the most common type of renal cell carcinoma (clear cell RCC), the physician should counsel her that her tumor exhibits which of the following clinical behaviors?",
+                options: {
+                    A: "It has a significantly worse prognosis.",
+                    B: "It is highly resistant to surgical resection.",
+                    C: "It is much less likely to metastasize.",
+                    D: "It almost universally presents with synchronous brain metastases.",
+                    E: "It requires immediate, aggressive multi-agent chemotherapy for survival."
+                },
+                correctAnswer: "C",
+                rationale: "Chromophobe RCC typically carries a good prognosis. It is much less likely to metastasize than clear cell RCC, and surgery is virtually always curative.",
+                source: "Tumors of the Kidney PDF, slide 48: 'Prognosis of Chromophobe RCC • Good prognosis • Typically not graded • Much less likely to metastasize than clear cell RCC • Surgery virtually always curative'"
+            },
+
+            // --- Section 3: Steroid Hormones ---
+            {
+                section: "Steroid Hormones",
+                fullLO: "LO1: Compare and contrast the functioning of G protein-coupled, enzyme-linked, and steroid hormone receptors. Identify key adrenal and gonadal steroid hormones.",
+                question: "A medical student is studying the synthesis and secretion mechanisms of various endocrine hormones. Unlike peptide hormones, which are stored in secretory vesicles and released via exocytosis, steroid hormones are released immediately upon synthesis. Which of the following fundamental chemical properties best explains this characteristic of steroid hormones?",
+                options: {
+                    A: "They are derived from the amino acid tyrosine.",
+                    B: "They are highly lipid soluble.",
+                    C: "They are highly water soluble.",
+                    D: "They are proteolytically cleaved from larger precursors.",
+                    E: "They rely exclusively on G protein-coupled receptors."
+                },
+                correctAnswer: "B",
+                rationale: "Steroid hormones (all derived from cholesterol) are lipid soluble. Because of their lipid solubility, they are freely permeable to cell membranes. Thus, they cannot be stored in vesicles; instead, they simply diffuse out of the cell (are released) immediately upon synthesis.",
+                source: "Steroid Hormones PDF, slide 19: 'Unlike peptide hormones, steroids are generally lipid soluble and are permeable to membranes and therefore released upon synthesis but circulate bound to binding proteins.'"
+            },
+            {
+                section: "Steroid Hormones",
+                fullLO: "LO1: Compare and contrast the functioning of G protein-coupled, enzyme-linked, and steroid hormone receptors. Identify key adrenal and gonadal steroid hormones.",
+                question: "An endocrinologist is reviewing a patient's hormone panel, noting the various steroid hormones synthesized by the adrenal cortex and the gonads. Which of the following steroid hormones is definitively classified as a mineralocorticoid and is primarily secreted by the adrenal gland to regulate sodium homeostasis?",
+                options: {
+                    A: "Aldosterone",
+                    B: "Cortisol",
+                    C: "Estradiol",
+                    D: "Progesterone",
+                    E: "Testosterone"
+                },
+                correctAnswer: "A",
+                rationale: "The major types of steroid hormones are categorized by their function and origin. Aldosterone (along with deoxycorticosterone) is a mineralocorticoid, which is produced by the adrenal cortex.",
+                source: "Steroid Hormones PDF, slide 11: 'Major Types of Steroid Hormones... Mineralocorticoids: aldosterone and deoxycorticosterone – adrenal'"
+            },
+            {
+                section: "Steroid Hormones",
+                fullLO: "LO1: Compare and contrast the functioning of G protein-coupled, enzyme-linked, and steroid hormone receptors. Identify key adrenal and gonadal steroid hormones.",
+                question: "A 25-year-old male athlete is suspected of illicitly using anabolic steroids to enhance muscle mass. Blood tests reveal severely depressed levels of endogenous testosterone and dihydrotestosterone. Under normal physiological conditions, these specific hormones belong to which of the following major classes of steroid hormones?",
+                options: {
+                    A: "Androgens",
+                    B: "Estrogens",
+                    C: "Glucocorticoids",
+                    D: "Mineralocorticoids",
+                    E: "Progestins"
+                },
+                correctAnswer: "A",
+                rationale: "Testosterone and dihydrotestosterone are classified as Androgens, which are primarily secreted by the gonads (predominantly the testes in males).",
+                source: "Steroid Hormones PDF, slide 11: 'Major Types of Steroid Hormones • Androgens: testosterone and dihydrotestosterone – gonads (predominantly testes)'"
+            },
+            {
+                section: "Steroid Hormones",
+                fullLO: "LO2: Name the hormones secreted by the pituitary, how their secretion is regulated and how they exert their actions, including their involvement in regulating the production of several steroid hormones.",
+                question: "A 30-year-old woman complains of milky nipple discharge (galactorrhea) despite not being pregnant or breastfeeding. An MRI reveals a small tumor in her anterior pituitary gland. The pituitary hormone responsible for driving this abnormal milk production is normally under constitutive, tonic inhibition by which of the following substances released from the hypothalamus?",
+                options: {
+                    A: "Corticotropin-releasing hormone (CRH)",
+                    B: "Dopamine",
+                    C: "Gonadotropin-releasing hormone (GnRH)",
+                    D: "Somatostatin",
+                    E: "Thyrotropin-releasing hormone (TRH)"
+                },
+                correctAnswer: "B",
+                rationale: "Prolactin is secreted by the anterior pituitary to promote milk production in the mammary glands. Uniquely among anterior pituitary hormones, prolactin secretion is constitutively (constantly) inhibited by dopamine released from the hypothalamus. A disruption of this dopamine delivery can lead to inappropriate prolactin secretion.",
+                source: "Steroid Hormones PDF, slide 18: 'Upstream and Downstream of Pituitary Hormones... Dopamine – Prolactin – Milk Production (mammary glands)... Prolactin secretion is constitutively inhibited by dopamine'"
+            },
+            {
+                section: "Steroid Hormones",
+                fullLO: "LO2: Name the hormones secreted by the pituitary, how their secretion is regulated and how they exert their actions, including their involvement in regulating the production of several steroid hormones.",
+                question: "A 40-year-old woman presents with severe truncal obesity, hirsutism, and muscle wasting. Laboratory tests reveal markedly elevated serum cortisol levels. The physician suspects a primary adrenocortical tumor autonomously secreting excessive cortisol (Cushing's Syndrome). Assuming her hypothalamic-pituitary-adrenal (HPA) axis feedback loops are intact, which of the following ACTH levels would strongly support this diagnosis of primary disease?",
+                options: {
+                    A: "Fluctuating",
+                    B: "High",
+                    C: "Low",
+                    D: "Normal",
+                    E: "Unchanged"
+                },
+                correctAnswer: "C",
+                rationale: "In a primary endocrine disease, the target organ (the adrenal gland) autonomously overproduces the \"response\" hormone (cortisol). The high levels of cortisol exert strong negative feedback on the pituitary gland, profoundly suppressing the release of the \"stimulus\" hormone (ACTH). Therefore, a primary adrenal tumor causing hypercortisolism will present with high cortisol and low ACTH.",
+                source: "Steroid Hormones PDF, slide 47: 'Primary versus secondary endocrine disease... Primary failure of target endocrine organ[Autonomous (primary) secretion of target endocrine organ] -> Target hormone level High -> Pituitary hormone level Low' AND 'Is this 1° or 2° hypercortisolism?' (Slide 52)"
+            },
+            {
+                section: "Steroid Hormones",
+                fullLO: "LO2: Name the hormones secreted by the pituitary, how their secretion is regulated and how they exert their actions, including their involvement in regulating the production of several steroid hormones.",
+                question: "A 16-year-old boy presents with delayed puberty. Endocrinologic evaluation reveals a deficiency in Gonadotropin-Releasing Hormone (GnRH). In a healthy individual, normal pulsatile secretion of GnRH from the hypothalamus directly stimulates the anterior pituitary to secrete which of the following paired hormones?",
+                options: {
+                    A: "ACTH and Cortisol",
+                    B: "GH and IGF1",
+                    C: "LH and FSH",
+                    D: "Prolactin and Oxytocin",
+                    E: "TSH and TRH"
+                },
+                correctAnswer: "C",
+                rationale: "The Hypothalamic-Pituitary-Gonadal (HPG) axis begins with GnRH from the hypothalamus. GnRH stimulates the anterior pituitary to release Luteinizing Hormone (LH) and Follicle-Stimulating Hormone (FSH), which in turn stimulate the gonads to produce testosterone or estradiol.",
+                source: "Steroid Hormones PDF, slide 18: 'Upstream and Downstream of Pituitary Hormones... GnRH – LH and FSH – Testosterone or Estradiol (gonads)'"
+            },
+            {
+                section: "Steroid Hormones",
+                fullLO: "LO3: Describe the key steps in the synthesis of steroid hormones, especially the enzymes required in a particular endocrine organ to allow the production of a certain steroid.",
+                question: "A biochemist is investigating the steroidogenic pathway in human adrenal cells. She notes that one specific step sets the absolute speed limit for the production of all downstream steroid hormones. This rate-limiting step involves the physical transport of free cholesterol from the cytoplasm into the mitochondria. Which of the following proteins is directly responsible for this critical translocation?",
+                options: {
+                    A: "21α-hydroxylase",
+                    B: "Aromatase",
+                    C: "Cytochrome P450 monooxygenase",
+                    D: "Steroidogenic Acute Regulatory Protein (StAR)",
+                    E: "SULT2A1"
+                },
+                correctAnswer: "D",
+                rationale: "The primary rate-limiting step for all steroid hormone synthesis is getting cholesterol into the inner mitochondrial membrane where the conversion process begins. This translocation is accomplished by the Steroidogenic Acute Regulatory Protein (StAR).",
+                source: "Steroid Hormones PDF, slide 19: 'The rate-limiting step in steroid production is the transport of free cholesterol from the cytoplasm into mitochondria. This step is accomplished by the Steroidogenic Acute Regulatory Protein (StAR), which translocates cholesterol from the outer to the inner membrane.'"
+            },
+            {
+                section: "Steroid Hormones",
+                fullLO: "LO3: Describe the key steps in the synthesis of steroid hormones, especially the enzymes required in a particular endocrine organ to allow the production of a certain steroid.",
+                question: "A biochemist is analyzing the intracellular organelles involved in steroidogenesis within the adrenal cortex. After cholesterol is successfully transported into the inner mitochondrial membrane by StAR, it undergoes an immediate enzymatic conversion into pregnenolone. Which of the following specific enzymes catalyzes this initial conversion?",
+                options: {
+                    A: "11β-hydroxylase",
+                    B: "21α-hydroxylase",
+                    C: "5α-reductase",
+                    D: "Aromatase",
+                    E: "Cytochrome P450scc (CYP11A1 / Desmolase)"
+                },
+                correctAnswer: "E",
+                rationale: "Once inside the inner mitochondrial membrane, cholesterol is converted to pregnenolone by the enzyme Desmolase, which is also known as P450scc or CYP11A1.",
+                source: "Steroid Hormones PDF, slide 23: 'Conversion of cholesterol to pregnenolone (in inner mitochondrial membrane)... Cholesterol (27 C) -> Desmolase (P450scc) (CYP11A1) -> Pregnenolone (21 C)'"
+            },
+            {
+                section: "Steroid Hormones",
+                fullLO: "LO3: Describe the key steps in the synthesis of steroid hormones, especially the enzymes required in a particular endocrine organ to allow the production of a certain steroid.",
+                question: "A 24-year-old woman is evaluated for primary amenorrhea. Hormone profiling indicates that her ovaries have a normal capacity to produce androgens (such as testosterone and androstenedione), but possess a severe inability to convert these androgenic precursors into estrogens (estrone and estradiol). A genetic defect in which of the following specific enzymes most likely explains this specific failure?",
+                options: {
+                    A: "11β-hydroxylase",
+                    B: "21α-hydroxylase",
+                    C: "5α-reductase",
+                    D: "Aromatase",
+                    E: "CYP11B2 (Aldosterone synthase)"
+                },
+                correctAnswer: "D",
+                rationale: "The production of estrogens (estrone, estradiol) from androgens (androstenedione, testosterone) strictly requires the enzyme aromatase (CYP19A1). This enzyme is highly active in the ovaries to produce female sex hormones.",
+                source: "Steroid Hormones PDF, slides 42 & 45: 'Gonadal Steroid Synthesis... CYP19A1 (aromatase) In ovaries estradiol (estrone, estriol)' and pathway diagram showing Aromatase converting Androstenedione to Estrone and Testosterone to Estradiol in the ovary"
+            },
+            {
+                section: "Steroid Hormones",
+                fullLO: "LO4: Understand how deficiencies/blocks in enzymes in the steroid hormone synthesis pathway can affect the production of downstream and upstream steroids.",
+                question: "A 5-year-old girl is brought to the clinic because her mother noticed she has developed coarse pubic hair and severe acne. Laboratory tests show elevated 17-hydroxyprogesterone, extremely high DHEA-sulfate, low-normal cortisol, and normal aldosterone. An ACTH stimulation test confirms an abnormally high level of 17-hydroxyprogesterone. Which of the following enzyme deficiencies is most likely blocking cortisol synthesis and shunting precursors into the androgen pathway in this patient?",
+                options: {
+                    A: "11β-hydroxylase",
+                    B: "17α-hydroxylase",
+                    C: "21-hydroxylase",
+                    D: "3β-hydroxysteroid dehydrogenase",
+                    E: "Aromatase"
+                },
+                correctAnswer: "C",
+                rationale: "21-hydroxylase deficiency is the most common form of Congenital Adrenal Hyperplasia. It blocks the conversion of 17-hydroxyprogesterone to 11-deoxycortisol (and progesterone to 11-deoxycorticosterone). Because cortisol cannot be made efficiently, ACTH rises, driving massive accumulation of precursors (like 17-OH progesterone) which spill over into the androgen pathway (DHEA, androstenedione), causing virilization and precocious puberty.",
+                source: "Steroid Hormones PDF, slide 28: 'A mother and her five year-old daughter visit your office... elevated 17 hydroxyprogesterone... normal aldosterone... abnormally high level of 17-hydroxyprogesterone. These results suggest the following: C. partial deficiency of steroid 21-hydroxylase'"
+            },
+            {
+                section: "Steroid Hormones",
+                fullLO: "LO4: Understand how deficiencies/blocks in enzymes in the steroid hormone synthesis pathway can affect the production of downstream and upstream steroids.",
+                question: "A newborn genetic male (46, XY) presents with severe fluid retention, profound hypertension, and signs of premature sexual development. Laboratory tests demonstrate decreased production of cortisol, markedly increased production of androgens, and an accumulation of 11-deoxycorticosterone (which possesses weak mineralocorticoid activity). Which of the following specific enzyme deficiencies is the most likely cause of this patient's clinical presentation?",
+                options: {
+                    A: "11β-hydroxylase",
+                    B: "17α-hydroxylase",
+                    C: "21-hydroxylase",
+                    D: "3β-hydroxysteroid dehydrogenase",
+                    E: "StAR protein"
+                },
+                correctAnswer: "A",
+                rationale: "11β-hydroxylase deficiency blocks the final step in the synthesis of cortisol and aldosterone. It leads to the accumulation of 11-deoxycortisol and 11-deoxycorticosterone. 11-deoxycorticosterone acts as a mineralocorticoid, causing intense salt and water retention, leading to severe hypertension. The blocked cortisol pathway also shunts precursors toward massive androgen production, causing virilization. This combination (hypertension + virilization) is classic for 11β-hydroxylase deficiency.",
+                source: "Steroid Hormones PDF, slide 41: '11β-hydroxylase deficiency • decreased production of cortisol • Accumulation of 11-deoxycortisol & possibly 11-deoxycorticosterone, both with some mineralocorticoid activity • increased fluid retention & hypertension • increased production of androgens'"
+            },
+            {
+                section: "Steroid Hormones",
+                fullLO: "LO4: Understand how deficiencies/blocks in enzymes in the steroid hormone synthesis pathway can affect the production of downstream and upstream steroids.",
+                question: "A 16-year-old phenotypically female patient presents for evaluation of primary amenorrhea and a lack of secondary sexual characteristics. Her blood pressure is remarkably high at 165/100 mmHg. Laboratory findings indicate elevated aldosterone, but virtually undetectable levels of cortisol, androgens, and estrogens. Which of the following enzyme deficiencies perfectly explains this complete inability to synthesize sex hormones combined with mineralocorticoid excess?",
+                options: {
+                    A: "11β-hydroxylase",
+                    B: "17α-hydroxylase",
+                    C: "21-hydroxylase",
+                    D: "3β-hydroxysteroid dehydrogenase",
+                    E: "Aromatase"
+                },
+                correctAnswer: "B",
+                rationale: "17α-hydroxylase deficiency blocks the pathways to both cortisol and sex hormones (androgens and estrogens). Because those pathways are blocked, precursors are shunted entirely down the mineralocorticoid pathway, resulting in excessive aldosterone production (causing severe Na+ retention and hypertension). The lack of sex hormones leads to an inability to mature sexually.",
+                source: "Steroid Hormones PDF, slide 43: '17α-hydroxylase deficiency • Low cortisol • Low androgens & estrogens • Children unable to mature (low sex hormones so sexual development problems) • increased production of aldosterone • increased Na+ retention; hypertension'"
+            },
+            {
+                section: "Steroid Hormones",
+                fullLO: "LO4: Understand how deficiencies/blocks in enzymes in the steroid hormone synthesis pathway can affect the production of downstream and upstream steroids.",
+                question: "A newborn infant presents with severe hypotension, salt-wasting, and rapidly progressing adrenal crisis. MRI demonstrates massive lipoid hyperplasia of the adrenal glands. Hormone panels show a complete absence of all glucocorticoids, mineralocorticoids, and sex steroids. This devastating, often lethal condition is caused by a mutation in which of the following?",
+                options: {
+                    A: "17α-hydroxylase",
+                    B: "21-hydroxylase",
+                    C: "3β-hydroxysteroid dehydrogenase",
+                    D: "Aromatase",
+                    E: "Steroidogenic Acute Regulatory Protein (StAR)"
+                },
+                correctAnswer: "E",
+                rationale: "A mutation in the StAR protein completely halts the very first, rate-limiting step of all steroid hormone synthesis (transport of cholesterol into the mitochondria). This results in Lipoid Congenital Adrenal Hyperplasia, characterized by an inability to produce any steroid hormones (low cortisol, low aldosterone, low sex hormones), leading to fatal salt-wasting and hypotensive crises.",
+                source: "Steroid Hormones PDF, slides 32 & 35: 'StAR deficiency • Results in Lipoid Congenital Adrenal Hyperplasia (lipoid CAH) • Low glucocorticoids –- cortisol • Low mineralocorticoids –- aldosterone... Low sex hormone levels... Loss of Na+/water; hypotension, Addisonian-like crises and possible death' AND 'A newborn presents with low cortisol and aldosterone levels. MRI demonstrates lipoid hyperplasia... What is the most likely defect? D. Mutation of StAR'"
+            }
+        ];
+
+        // --- Core Logic ---
+        const quizRoot = document.getElementById('quiz-root');
+        const themeSelect = document.getElementById('theme-select');
+        const pinBtn = document.getElementById('pin-btn');
+        const mainHeader = document.getElementById('main-header');
+        const sectionNav = document.getElementById('section-nav');
+        const customBuilder = document.getElementById('custom-builder');
+        const rootElements = document.documentElement;
+
+        let isRevealed = false;
+
+        function toggleAllLOs() {
+            isRevealed = !isRevealed;
+            const btn = document.getElementById('reveal-all-btn');
+            btn.textContent = isRevealed ? "Hide Learning Objectives" : "Show Learning Objectives";
+            
+            document.querySelectorAll('.lo-box').forEach(box => {
+                box.style.display = isRevealed ? 'block' : 'none';
+            });
+        }
+
+        function initQuiz() {
+            let currentSection = "";
+            let sectionIndex = 0;
+            
+            quizData.forEach((item, index) => {
+                if (item.section !== currentSection) {
+                    currentSection = item.section;
+                    
+                    const sectionId = 'sec-' + sectionIndex;
+                    
+                    const sectionHeader = document.createElement('h2');
+                    sectionHeader.className = 'section-header';
+                    sectionHeader.id = sectionId;
+                    sectionHeader.textContent = currentSection;
+                    quizRoot.appendChild(sectionHeader);
+
+                    const navBtn = document.createElement('button');
+                    navBtn.textContent = currentSection;
+                    navBtn.onclick = () => {
+                        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+                    };
+                    sectionNav.appendChild(navBtn);
+
+                    sectionIndex++;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-card-${index}`;
+
+                const loBox = document.createElement('div');
+                loBox.className = 'lo-box';
+                loBox.id = `lo-${index}`;
+                loBox.innerHTML = item.fullLO;
+                card.appendChild(loBox);
+
+                const qText = document.createElement('div');
+                qText.className = 'question-text';
+                qText.innerHTML = `${index + 1}. ${item.question}`;
+                card.appendChild(qText);
+
+                const optionsGrid = document.createElement('div');
+                optionsGrid.className = 'options-grid';
+
+                for (const[key, value] of Object.entries(item.options)) {
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = key;
+
+                    const span = document.createElement('span');
+                    span.innerHTML = `${key}. ${value}`;
+
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    optionsGrid.appendChild(label);
+                }
+                card.appendChild(optionsGrid);
+
+                const btn = document.createElement('button');
+                btn.className = 'btn-check';
+                btn.textContent = 'Check Answer';
+                btn.onclick = () => checkAnswer(index);
+                card.appendChild(btn);
+
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback';
+                feedback.id = `feedback-${index}`;
+                card.appendChild(feedback);
+
+                quizRoot.appendChild(card);
+            });
+
+            const returnContainer = document.createElement('div');
+            returnContainer.style.textAlign = 'center';
+            returnContainer.style.marginTop = '2rem';
+            
+            const returnBtn = document.createElement('a');
+            returnBtn.href = 'https://ibecerramcg.github.io/GI-GU-ENDO-Practice-Quizzes/';
+            returnBtn.className = 'btn-link';
+            returnBtn.textContent = '← Return to Quiz Directory';
+            
+            returnContainer.appendChild(returnBtn);
+            quizRoot.appendChild(returnContainer);
+
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            themeSelect.value = savedTheme;
+            changeTheme(savedTheme);
+
+            const savedPinState = localStorage.getItem('headerPinned');
+            toggleHeader(savedPinState !== 'false');
+        }
+
+        function checkAnswer(index) {
+            const selected = document.querySelector(`input[name="question-${index}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${index}`);
+            const data = quizData[index];
+
+            if (!selected) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            const isCorrect = selected.value === data.correctAnswer;
+            
+            let html = `<span class="feedback-header">${isCorrect ? "Correct!" : "Incorrect"}</span>`;
+            if (!isCorrect) {
+                html += `<div>The correct answer is <strong>${data.correctAnswer}</strong>.</div>`;
+            }
+            
+            html += `<div class="rationale"><strong>Rationale:</strong> ${data.rationale}</div>`;
+            html += `<div class="source"><strong>Source:</strong> ${data.source}</div>`;
+
+            feedbackEl.innerHTML = html;
+            feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackEl.style.display = 'block';
+        }
+
+        function changeTheme(themeName) {
+            localStorage.setItem('quizTheme', themeName);
+            
+            if (themeName === 'custom') {
+                rootElements.removeAttribute('data-theme');
+                customBuilder.classList.add('active');
+                loadCustomTheme();
+            } else {
+                rootElements.setAttribute('data-theme', themeName);
+                customBuilder.classList.remove('active');
+                rootElements.removeAttribute('style');
+            }
+        }
+
+        function updateCustomTheme() {
+            const bg = document.getElementById('color-bg').value;
+            const card = document.getElementById('color-card').value;
+            const text = document.getElementById('color-text').value;
+            const accent = document.getElementById('color-accent').value;
+
+            rootElements.style.setProperty('--bg-body', bg);
+            rootElements.style.setProperty('--bg-header', bg);
+            rootElements.style.setProperty('--bg-card', card);
+            rootElements.style.setProperty('--highlight-bg', card);
+            rootElements.style.setProperty('--text-main', text);
+            rootElements.style.setProperty('--text-accent', accent);
+            rootElements.style.setProperty('--button-bg', accent);
+            rootElements.style.setProperty('--button-text', bg);
+            rootElements.style.setProperty('--border-color', accent + '40');
+
+            const customColors = { bg, card, text, accent };
+            localStorage.setItem('customThemeColors', JSON.stringify(customColors));
+        }
+
+        function loadCustomTheme() {
+            const savedColors = JSON.parse(localStorage.getItem('customThemeColors'));
+            if (savedColors) {
+                document.getElementById('color-bg').value = savedColors.bg;
+                document.getElementById('color-card').value = savedColors.card;
+                document.getElementById('color-text').value = savedColors.text;
+                document.getElementById('color-accent').value = savedColors.accent;
+                updateCustomTheme();
+            } else {
+                updateCustomTheme();
+            }
+        }
+
+        function toggleHeader(forceState) {
+            const isCurrentlyPinned = !mainHeader.classList.contains('unpinned');
+            const newState = (typeof forceState === 'boolean') ? forceState : !isCurrentlyPinned;
+
+            if (newState) {
+                mainHeader.classList.remove('unpinned');
+                pinBtn.classList.add('pin-active');
+                localStorage.setItem('headerPinned', 'true');
+            } else {
+                mainHeader.classList.add('unpinned');
+                pinBtn.classList.remove('pin-active');
+                localStorage.setItem('headerPinned', 'false');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initQuiz);
+
+    </script>
+</body>
+</html>
